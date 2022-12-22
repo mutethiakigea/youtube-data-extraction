@@ -1,0 +1,36 @@
+import google.auth
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
+# Set up the API client and request the YouTube API
+def get_youtube_api_client():
+  # Authenticate the API client
+  credentials, project = google.auth.default()
+
+  # Build the API client
+  youtube = build('youtube', 'v3', credentials=credentials)
+
+  return youtube
+
+# Get statistical data for a YouTube channel
+def get_channel_statistics(channel_id):
+  youtube = get_youtube_api_client()
+
+  # Make the API request to get the channel statistics
+  response = youtube.channels().list(
+    id=channel_id,
+    part='statistics'
+  ).execute()
+
+  # Extract the statistical data from the response
+  statistics = response['items'][0]['statistics']
+
+  return statistics
+
+# Example usage:
+channel_id = 'UC_x5XG1OV2P6uZZ5FSM9Ttw'
+statistics = get_channel_statistics(channel_id)
+print(f'View count: {statistics["viewCount"]}')
+print(f'Comment count: {statistics["commentCount"]}')
+print(f'Subscriber count: {statistics["subscriberCount"]}')
+print(f'Video count: {statistics["videoCount"]}')
